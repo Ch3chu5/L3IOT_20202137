@@ -76,6 +76,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        startButton.setOnClickListener(view -> {
+            if (isConnected) {
+                // Obtiene la cantidad de preguntas
+                String amountStr = amountEditText.getText().toString();
+                int amount = Integer.parseInt(amountStr);
+
+                // Obtiene la dificultad seleccionada
+                int difficultyPos = difficultySpinner.getSelectedItemPosition();
+                int timePerQuestion = 0;
+
+                switch (difficultyPos) {
+                    case 1: // Fácil
+                        timePerQuestion = 5;
+                        break;
+                    case 2: // Medio
+                        timePerQuestion = 7;
+                        break;
+                    case 3: // Difícil
+                        timePerQuestion = 10;
+                        break;
+                }
+
+                // Calcula el tiempo total
+                int totalTime = timePerQuestion * amount;
+
+                // Aquí puedes pasar este tiempo a la siguiente actividad
+                Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
+                intent.putExtra("totalTime", totalTime); // Pasa el tiempo total a la siguiente actividad
+                startActivity(intent);
+            }
+        });
+
 
 
         EdgeToEdge.enable(this);
