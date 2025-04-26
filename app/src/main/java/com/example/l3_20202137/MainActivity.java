@@ -1,6 +1,7 @@
 package com.example.l3_20202137;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -66,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Iniciando juego...", Toast.LENGTH_SHORT).show();
             }
         });
+
+        startButton.setOnClickListener(view -> {
+            if (isConnected) {
+                // Crear un Intent para redirigir a la actividad QuestionsActivity
+                Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
 
         EdgeToEdge.enable(this);

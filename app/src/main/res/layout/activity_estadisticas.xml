@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#2196F3"
+    android:gravity="center">
+
+    <!-- Título de la actividad -->
+    <TextView
+        android:id="@+id/resultsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resultados"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#2C2C2C"
+        android:paddingBottom="16dp" />
+
+    <!-- Estadísticas: Correctas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:gravity="start|center_vertical">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_correct"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Correctas"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C" />
+
+        <TextView
+            android:id="@+id/correctCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- Estadísticas: Incorrectas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:gravity="start|center_vertical">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_incorrect"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Incorrectas"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C" />
+
+        <TextView
+            android:id="@+id/incorrectCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- Estadísticas: No Respondidas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp"
+        android:gravity="start|center_vertical">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_not_answered"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Respondidas"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C" />
+
+        <TextView
+            android:id="@+id/notAnsweredCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:textSize="18sp"
+            android:textColor="#2C2C2C"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- Botón Volver a Jugar -->
+    <Button
+        android:id="@+id/replayButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver a Jugar"
+        android:backgroundTint="#826AED"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="24dp"/>
+</LinearLayout>
