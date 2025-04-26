@@ -7,6 +7,9 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,15 +22,29 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    Spinner categorySpinner, difficultySpinner;
-    EditText amountEditText;
-    Button checkConnectionButton, startButton;
+    private Spinner categorySpinner, difficultySpinner;
+    private EditText amountEditText;
+    private Button checkConnectionButton, startButton;
 
     boolean isConnected = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +57,12 @@ public class MainActivity extends AppCompatActivity {
         checkConnectionButton = findViewById(R.id.checkConnectionButton);
         startButton = findViewById(R.id.startButton);
 
-        setupSpinners(); // <-- AQUÍ
+        setupSpinners(); // Configura los Spinners
 
+        // Obtiene las categorías desde la API
+        getCategories();
 
         startButton.setEnabled(false);
-
 
         checkConnectionButton.setOnClickListener(view -> {
             if (!validateInputs()) return;
@@ -63,61 +81,136 @@ public class MainActivity extends AppCompatActivity {
 
         startButton.setOnClickListener(view -> {
             if (isConnected) {
-                // Aquí iría el Intent a la siguiente vista
-                Toast.makeText(this, "Iniciando juego...", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        startButton.setOnClickListener(view -> {
-            if (isConnected) {
-                // Crear un Intent para redirigir a la actividad QuestionsActivity
-                Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        startButton.setOnClickListener(view -> {
-            if (isConnected) {
-                // Obtiene la cantidad de preguntas
+                // Obtén los valores seleccionados para la cantidad, categoría y dificultad
                 String amountStr = amountEditText.getText().toString();
                 int amount = Integer.parseInt(amountStr);
-
-                // Obtiene la dificultad seleccionada
                 int difficultyPos = difficultySpinner.getSelectedItemPosition();
-                int timePerQuestion = 0;
-
+                String difficulty = "";
                 switch (difficultyPos) {
                     case 1: // Fácil
-                        timePerQuestion = 5;
+                        difficulty = "easy";
                         break;
                     case 2: // Medio
-                        timePerQuestion = 7;
+                        difficulty = "medium";
                         break;
                     case 3: // Difícil
-                        timePerQuestion = 10;
+                        difficulty = "hard";
                         break;
                 }
 
-                // Calcula el tiempo total
-                int totalTime = timePerQuestion * amount;
+                // Obtiene el ID de la categoría seleccionada
+                int categoryPos = categorySpinner.getSelectedItemPosition();
 
-                // Aquí puedes pasar este tiempo a la siguiente actividad
-                Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
-                intent.putExtra("totalTime", totalTime); // Pasa el tiempo total a la siguiente actividad
-                startActivity(intent);
+                // Realiza la solicitud para obtener las preguntas
+                fetchQuestions(amount, categoryPos, difficulty);
             }
-        });
-
-
-
-        EdgeToEdge.enable(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
         });
     }
 
+    // Método para obtener las categorías
+    private void getCategories() {
+        // Crear el cliente Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://opentdb.com/") // Asegúrate de que la URL base esté configurada correctamente
+                .addConverterFactory(GsonConverterFactory.create()) // Usamos Gson para deserializar la respuesta
+                .build();
+
+        TriviaApiServicio apiService = retrofit.create(TriviaApiServicio.class);
+
+        // Realiza la solicitud GET a la API para obtener categorías
+        Call<CategoryResponse> call = apiService.getCategories();
+
+        call.enqueue(new Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                if (response.isSuccessful()) {
+                    // Llenar el Spinner con las categorías obtenidas
+                    List<CategoryResponse.Category> categories = response.body().getTriviaCategories();
+                    List<String> categoryNames = new ArrayList<>();
+                    categoryNames.add("Selecciona una categoría");
+
+                    // Agregar categorías al Spinner
+                    for (CategoryResponse.Category category : categories) {
+                        categoryNames.add(category.getName());
+                    }
+
+                    ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, categoryNames);
+                    categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    categorySpinner.setAdapter(categoryAdapter);
+                } else {
+                    Toast.makeText(MainActivity.this, "Error al obtener categorías", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error al realizar la solicitud", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    // Método para obtener las preguntas
+    private void fetchQuestions(int amount, int category, String difficulty) {
+        // Crear el cliente Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://opentdb.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TriviaApiServicio apiService = retrofit.create(TriviaApiServicio.class);
+
+        // Realiza la solicitud GET para obtener preguntas
+        Call<Answer> call = apiService.getQuestions(amount, category, difficulty, "multiple");
+        call.enqueue(new Callback<Answer>() {
+            @Override
+            public void onResponse(Call<Answer> call, Response<Answer> response) {
+                if (response.isSuccessful()) {
+                    // Obtén las preguntas de la respuesta
+                    Answer answer = response.body();
+                    List<Question> questions = answer.getResults();
+
+                    // Inicia la siguiente actividad pasando las preguntas
+                    Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
+                    intent.putParcelableArrayListExtra("questions", new ArrayList<>(questions));  // Pasa las preguntas
+                    int timePerQuestion = 0;
+
+                    // Calcula el tiempo total según la dificultad
+                    switch (difficulty) {
+                        case "easy":
+                            timePerQuestion = 5;
+                            break;
+                        case "medium":
+                            timePerQuestion = 7;
+                            break;
+                        case "hard":
+                            timePerQuestion = 10;
+                            break;
+                    }
+
+                    int totalTime = timePerQuestion * amount;
+                    intent.putExtra("totalTime", totalTime); // Pasa el tiempo total a la siguiente actividad
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MainActivity.this, "Error al obtener preguntas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Answer> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Validación de conexión a internet
+    private boolean checkInternetConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return (activeNetwork != null && activeNetwork.isConnected());
+    }
+
+    // Validación de campos en el formulario
     private boolean validateInputs() {
         String amountStr = amountEditText.getText().toString();
         int categoryPos = categorySpinner.getSelectedItemPosition();
@@ -141,20 +234,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean checkInternetConnection() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return (activeNetwork != null && activeNetwork.isConnected());
-    }
-
     private void setupSpinners() {
-        // Spinner Categoría
-        String[] categories = {"Selecciona una categoría", "Cultura General", "Libros", "Películas", "Música",
-                "Computación", "Matemática", "Deportes", "Historia"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(categoryAdapter);
-
         // Spinner Dificultad
         String[] difficulties = {"Selecciona una dificultad", "Fácil", "Medio", "Difícil"};
         ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, difficulties);
