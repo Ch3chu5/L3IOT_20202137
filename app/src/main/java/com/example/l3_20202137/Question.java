@@ -8,8 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class Question implements Parcelable {
-
+public class Question {
     @SerializedName("category")
     private String category;
 
@@ -28,16 +27,6 @@ public class Question implements Parcelable {
     @SerializedName("incorrect_answers")
     private List<String> incorrectAnswers;
 
-    // Constructor
-    public Question(String category, String type, String difficulty, String question, String correctAnswer, List<String> incorrectAnswers) {
-        this.category = category;
-        this.type = type;
-        this.difficulty = difficulty;
-        this.question = question;
-        this.correctAnswer = correctAnswer;
-        this.incorrectAnswers = incorrectAnswers;
-    }
-
     // Getters
     public String getQuestion() {
         return question;
@@ -49,43 +38,5 @@ public class Question implements Parcelable {
 
     public List<String> getIncorrectAnswers() {
         return incorrectAnswers;
-    }
-
-    // Implementación de Parcelable
-
-    protected Question(Parcel in) {
-        category = in.readString();
-        type = in.readString();
-        difficulty = in.readString();
-        question = in.readString();
-        correctAnswer = in.readString();
-        incorrectAnswers = in.createStringArrayList();
-    }
-
-    public static final Creator<Question> CREATOR = new Creator<Question>() {
-        @Override
-        public Question createFromParcel(Parcel in) {
-            return new Question(in);
-        }
-
-        @Override
-        public Question[] newArray(int size) {
-            return new Question[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(category);
-        dest.writeString(type);
-        dest.writeString(difficulty);
-        dest.writeString(question);
-        dest.writeString(correctAnswer);
-        dest.writeStringList(incorrectAnswers);
     }
 }
