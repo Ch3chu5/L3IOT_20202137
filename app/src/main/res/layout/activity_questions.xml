@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#F6F9FD"
+    android:gravity="center">
+
+    <!-- Título de la actividad -->
+    <TextView
+        android:id="@+id/questionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿Listo? Juega!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#2C2C2C"
+        android:paddingBottom="16dp" />
+
+    <!-- Categoría seleccionada -->
+    <TextView
+        android:id="@+id/categoryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="General Knowledge"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:textColor="#4F4F4F"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Contador de tiempo -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:text="Tiempo restante"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#2C2C2C" />
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FF4F00"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Contador de pregunta actual -->
+    <TextView
+        android:id="@+id/questionCountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pregunta 1/3"
+        android:textSize="16sp"
+        android:textColor="#2C2C2C"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Pregunta -->
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What is the largest living species of penguin?"
+        android:textSize="18sp"
+        android:textColor="#2C2C2C"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Opciones -->
+    <RadioGroup
+        android:id="@+id/optionsGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="32dp">
+
+        <RadioButton
+            android:id="@+id/option1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Emperor"
+            android:textSize="16sp"
+            android:textColor="#2C2C2C" />
+
+        <RadioButton
+            android:id="@+id/option2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gentoo"
+            android:textSize="16sp"
+            android:textColor="#2C2C2C" />
+
+        <RadioButton
+            android:id="@+id/option3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="King"
+            android:textSize="16sp"
+            android:textColor="#2C2C2C" />
+
+        <RadioButton
+            android:id="@+id/option4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adele"
+            android:textSize="16sp"
+            android:textColor="#2C2C2C" />
+    </RadioGroup>
+
+    <!-- Botón siguiente -->
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Siguiente"
+        android:backgroundTint="#826AED"
+        android:textColor="#FFFFFF"
+        android:enabled="false" />
+
+</LinearLayout>

@@ -18,6 +18,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
 public class MainActivity extends AppCompatActivity {
 
     Spinner categorySpinner, difficultySpinner;
@@ -25,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
     Button checkConnectionButton, startButton;
 
     boolean isConnected = false;
-
-
 
 
     @Override
@@ -106,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         return (activeNetwork != null && activeNetwork.isConnected());
     }
 
-
     private void setupSpinners() {
         // Spinner Categoría
         String[] categories = {"Selecciona una categoría", "Cultura General", "Libros", "Películas", "Música",
@@ -121,7 +119,4 @@ public class MainActivity extends AppCompatActivity {
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(difficultyAdapter);
     }
-
-
-
 }
