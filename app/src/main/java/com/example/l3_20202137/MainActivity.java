@@ -175,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
 
                     // Inicia la siguiente actividad pasando las preguntas
                     Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
-                    intent.putParcelableArrayListExtra("questions", new ArrayList<>(questions));  // Pasa las preguntas
+                    intent.putParcelableArrayListExtra("questions", new ArrayList<>(questions));
+                    intent.putExtra("amount", amount);  // Pasa la cantidad de preguntas
+// Pasa las preguntas
                     intent.putExtra("category", categoryName); // Pasa el nombre de la categoría
                     int timePerQuestion = 0;
 
