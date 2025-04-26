@@ -3,6 +3,7 @@ package com.example.l3_20202137;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class QuestionsActivity extends AppCompatActivity {
 
+    private TextView categoryText;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +25,13 @@ public class QuestionsActivity extends AppCompatActivity {
 
         int totalTime = getIntent().getIntExtra("totalTime", 0);
 
+        categoryText = findViewById(R.id.categoryText);
+        String category = getIntent().getStringExtra("category");
+
+        Log.d("QuestionsActivity", "Category received: " + category);
+
+
+        categoryText.setText(category);
 
         TextView timerText = findViewById(R.id.timerText);
         startTimer(totalTime, timerText);

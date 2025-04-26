@@ -152,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Método para obtener las preguntas
     private void fetchQuestions(int amount, int category, String difficulty) {
+        // Obtener el nombre de la categoría seleccionada
+        String categoryName = categorySpinner.getSelectedItem().toString();
+
         // Crear el cliente Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://opentdb.com/")
@@ -173,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     // Inicia la siguiente actividad pasando las preguntas
                     Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
                     intent.putParcelableArrayListExtra("questions", new ArrayList<>(questions));  // Pasa las preguntas
+                    intent.putExtra("category", categoryName); // Pasa el nombre de la categoría
                     int timePerQuestion = 0;
 
                     // Calcula el tiempo total según la dificultad
